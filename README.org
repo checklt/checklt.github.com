@@ -11,17 +11,62 @@ CheckLT was born out of a research project at the University of Central Florida 
 
 Though CheckLT relies on Checker Framework for its base functionality (in fact, it is a plugin for the checker framework) CheckLT is being distributed independently of Checker Framework as a part of an experiment by this author to make formal verification tools more easily accessible outside of the research community. You can think of it as a "Click, Run, Verify!" approach to formal methods software!
 
-
-** Install
+* Install
 Before you install CheckLT, make sure you have a recent Java 7 (1.7) installed. You can use either the Oracle JDK or OpenJDK.
 
+To install, download the archive, and run the included jar file by double clicking on it. If for some reason your system does not suport running executable jar files by double clicking, you can install it from a command prompt by running:
+
+#+BEGIN_SRC sh
+
+# java -jar checklt-installer.jar
+
+#+END_SRC 
+
+After you install CheckLT, you can run it from the command prompt by running:
+
+#+BEGIN_SRC sh
+
+# checklt MyProgram.java
+
+#+END_SRC 
+
+Or, to run it on a whole source tree:
+
+#+BEGIN_SRC sh
+
+# checklt -source-dir src
+
+#+END_SRC 
 
 
 
-* More About Taint Tracking
+* Poor Man's Information Flow in Two Steps
 
-Even if you've never heard of taint tracking (and maybe even if you have), you can think of 
+To configure 
 
+* Configuring The Lattice
+
+The first thing you must do is configure a security lattice for use with CheckLT. This file should be called =security.xml=, and it should be in the root directory from which you execute CheckLT.
+
+* Label Syntax
+
+
+* Example: Protecting Internal Emails
+
+Pretend that you are tasked with the problem of creating an internal email system at a large corporation with lots of secrets and enemies. In light of this, the CEO has asked you to provide some assurance to him that it will not be possible for  
+
+
+* Acknowledgements and Thanks
+
+CheckLT is a direct byproduct of my work with Gary Leavens at the University of Central Florida and David Naumann the Stevens Insitute of Technology, to whom I am deeply grateful. Without their constant guideance (and correction!) and encouragement CheckLT wouldn't have been possible!
+
+
+* Related Works, People, Papers, Etc
+
+- Gary Leaven's Research Page @ UCF
+- The Checker Framework
+- CGR
+- Lattice Flow Tainting
 
 
 
