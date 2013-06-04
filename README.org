@@ -42,13 +42,125 @@ Or, to run it on a whole source tree:
 
 * Poor Man's Information Flow in Two Steps
 
-To configure 
+To configure CheckLT for your application you must do two things. First, you must configure security rules for your particular application. In this process you will configure a /security lattice/, as we shall see in the next section. Once your security lattice is set up you can then annotate your program to reflect your concerns. The next two sections cover this process in detail.
 
-* Configuring The Lattice
+** Configuring The Lattice
 
-The first thing you must do is configure a security lattice for use with CheckLT. This file should be called =security.xml=, and it should be in the root directory from which you execute CheckLT.
+The first thing you must do is configure a security lattice for use with CheckLT. This file should be called =security.xml=, and it should be in the root directory from which you execute CheckLT. Note that CheckLT can (and will) check your proposed lattice for soundness before executing. As of the current version, CheckLT checks to make sure that no insecure flows are specified (via graph cycle checking) and that all specified trusts are reachable and properly declared. 
 
-* Label Syntax
+The following example represents a slightly more complicated lattice than you will need for most projects. It is presented simply to showcase some of the flexibility of CheckLT.
+
+
+#+BEGIN_SRC xml
+
+<linear-lattice>
+
+    <!-- all levels must first be declared -->
+    <levels>
+        <level>Private</level>
+        <level>UserTrusts</level>
+        <level>User</level>
+        <level>Public</level>
+    </levels>
+
+
+    <level-specs>
+
+        <!-- level spec for Public -->
+        <level-spec>
+            <name>Public</name>
+
+            <trusts>
+                <level>Private</level>
+                <level>UserTrusts</level>
+                <level>User</level>
+            </trusts>
+        </level-spec>
+
+        <!-- level spec for User -->
+        <level-spec>
+            <name>User</name>
+
+            <trusts>
+                <level>UserTrusts</level>
+
+            </trusts>
+        </level-spec>
+
+
+        <!-- level spec for UserTrusts -->
+        <level-spec>
+            <name>UserTrusts</name>
+
+            <trusts>
+                <level>Private</level>
+
+            </trusts>
+        </level-spec>
+
+
+        <!-- level spec for UserTrusts -->
+        <level-spec>
+            <name>Private</name>
+
+            <trusts>
+                <!-- trusts no one (other than self) -->
+            </trusts>
+        </level-spec>
+
+    </level-specs>
+
+</linear-lattice>
+
+#+END_SRC
+
+The labels in Listing X.X are explained as follows:
+
+1. Public (⊥): Any information that may freely move through the application and conversely, the least trusted information level.
+2. User: Information that is private and should only be known to the user.
+3. UserTrusts: Information that is private, but may be shared with special endpoints that the user highly trusts. Endpoints may be specific instance variables, methods, or entire classes.
+4. Private (⊤): The highest level of privacy. Information may not even be known to the user. An example of such a piece of information could be an internal result used for the verification of a serial number.
+
+While more complex lattice structures are possible to represent in CheckLT, as of the current release, CheckLT recognizes a linear lattice at the moment. 
+
+Graphically represented, the lattice described above looks like Figure X.X. As you can see, the reason we call this a linear lattice is that the structure is strongly linear; that is, information may travel upwards in the lattice, but not back down (without declassification).
+
+** Label Syntax
+
+Labels in CheckLT are specified using Java Annotations. The BNF syntax is given in Listing X.X.
+
+#+BEGIN_SRC html
+
+<level> ::= ‘"’ <string> ‘"’
+<level-spec> ::= <level>
+
+<cond-op> ::= && 
+     | || 
+
+<expr-list> ::= <expr> <cond-op> <expr-list> | <expr> 
+<pattern> ::= <expr-list>
+<security-annotation> ::= ‘@AtLevel(’ <level-spec> ‘)’ 
+     | ‘@Level(’ <level-spec> ‘)’   |
+     | ‘@Level(pattern=’ <pattern> ‘,’ ‘label=’ <level-spec> ‘)’                             
+
+#+END_SRC
+
+** Declassification 
+
+Declassification is essentially a controlled release of information. Depending on your application of CheckLT, you may or may not want explicit declassification. For example, if you are using CheckLT to do taint tracking against within SQL queries, you might want to specify that /no/ declassification may be performed. However, in the same scenario you might have some routine that "untaints" a tainted query. In such a case you will need declassification. 
+
+Below is an example of explicit declassification. 
+
+
+#+BEGIN_SRC java
+
+
+Test
+
+
+
+
+#+END_SRC
 
 
 * Example: Protecting Internal Emails
@@ -58,15 +170,16 @@ Pretend that you are tasked with the problem of creating an internal email syste
 
 * Acknowledgements and Thanks
 
-CheckLT is a direct byproduct of my work with Gary Leavens at the University of Central Florida and David Naumann the Stevens Insitute of Technology, to whom I am deeply grateful. Without their constant guideance (and correction!) and encouragement CheckLT wouldn't have been possible!
+CheckLT is a direct byproduct of my work with Gary Leavens at the University of Central Florida and David Naumann the Stevens Insitute of Technology, to whom I am deeply grateful. Without their constant guidance (and correction!) and encouragement CheckLT wouldn't have been possible!
 
 
 * Related Works, People, Papers, Etc
 
 - Gary Leaven's Research Page @ UCF
+- David Naumann's Page
 - The Checker Framework
-- CGR
-- Lattice Flow Tainting
+- Paper for Lattice Model of Information Flow
+
 
 
 
