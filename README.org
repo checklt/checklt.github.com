@@ -43,7 +43,7 @@ Note that checklt supports all the commands available to a traditional Java comp
 
 * Building CheckLT
 
-To build CheckLT, you will need to have the build tool Gradle (version 1.4 or higher) installed. To build, simply use one of the gradle targets or simply:
+To build CheckLT, you will need to have the build tool Gradle (version 1.4 or higher) and [[http://izpack.org/][IzPack]] installed (version 4 or higher). CheckLT's build scripts assume that the IzPack install directory is on your path. To build, simply use one of the gradle targets or simply:
 
 #+BEGIN_SRC sh
 
@@ -67,7 +67,7 @@ To do this, execute the following commands from the base of the source distribut
 
 #+END_SRC
 
-The directory =checker-lattice=tainting-plugin= will now be an Eclipse project directory which may be imported. 
+The directory =checker-lattice-tainting-plugin= will now be an Eclipse project directory which may be imported. 
 
 Note that you must make a minor modification to the generated .classpath file.
 
@@ -172,16 +172,10 @@ Labels in CheckLT are specified using Java Annotations. The BNF syntax is given 
 #+BEGIN_SRC html
 
 <level> ::= ‘"’ <string> ‘"’
+
 <level-spec> ::= <level>
 
-<cond-op> ::= && 
-     | || 
-
-<expr-list> ::= <expr> <cond-op> <expr-list> | <expr> 
-<pattern> ::= <expr-list>
-<security-annotation> ::= ‘@AtLevel(’ <level-spec> ‘)’ 
-     | ‘@Level(’ <level-spec> ‘)’   |
-     | ‘@Level(pattern=’ <pattern> ‘,’ ‘label=’ <level-spec> ‘)’                             
+<security-annotation> ::= ‘@Level(’ <level-spec> ‘)’ 
 
 #+END_SRC
 
@@ -195,7 +189,7 @@ Below is an example of explicit declassification.
 #+BEGIN_SRC java
 
 
-Test
+TODO
 
 
 
@@ -203,10 +197,13 @@ Test
 #+END_SRC
 
 
-* Example: Protecting Internal Emails
+* Example: Keeping SQL Queries Clean
 
-Pretend that you are tasked with the problem of creating an internal email system at a large corporation with lots of secrets and enemies. In light of this, the CEO has asked you to provide some assurance to him that it will not be possible for  
+TODO
 
+* What's With the Name?
+
+CheckLT is a plugin for the Checker Framework that checks for taint using a lattice. The "LT" in  CheckLT is for "Lattice Tainting." It is pronounced to rhyme with "Chicklet."
 
 * Acknowledgements and Thanks
 
@@ -215,10 +212,11 @@ CheckLT is a direct byproduct of my work with Gary Leavens at the University of 
 
 * Related Works, People, Papers, Etc
 
-- Gary Leaven's Research Page @ UCF
-- David Naumann's Page
-- The Checker Framework
-- Paper for Lattice Model of Information Flow
+- [[http://www.the-singleton.com][My Blog @ The-Singleton]]
+- [[http://www.eecs.ucf.edu/~leavens/][Gary Leaven's Research Page @ UCF]]
+- [[http://www.cs.stevens.edu/~naumann/][David Naumann's Page]] 
+- [[http://types.cs.washington.edu/checker-framework/][The Checker Framework]]
+- [[http://docs.lib.purdue.edu/cgi/viewcontent.cgi?article=1123&context=cstech][Paper on the Lattice Model of Information Flow]]
 
 
 
