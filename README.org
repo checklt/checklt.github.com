@@ -22,7 +22,9 @@ To install, download the archive, and run the included jar file by double clicki
 
 #+END_SRC 
 
-After you install CheckLT, you can run it from the command prompt by running:
+Windows Users: To use CheckLT from the command line, please add the path you installed CheckLT in to your =PATH=. 
+
+After you install CheckLT you can run it from the command prompt by running:
 
 #+BEGIN_SRC sh
 
@@ -30,15 +32,53 @@ After you install CheckLT, you can run it from the command prompt by running:
 
 #+END_SRC 
 
-Or, to run it on a whole source tree:
+Note that checklt supports all the commands available to a traditional Java compiler. To get a complete list of options, you can run the following command:
 
 #+BEGIN_SRC sh
 
-# checklt -source-dir src
+# checklt -help
 
 #+END_SRC 
 
 
+* Building CheckLT
+
+To build CheckLT, you will need to have the build tool Gradle (version 1.4 or higher) installed. To build, simply use one of the gradle targets or simply:
+
+#+BEGIN_SRC sh
+
+# gradle
+
+#+END_SRC
+
+To build the entire distribution. All required dependencies will be fetched at build time. Note that you will need some recent Java 7 compiler (OpenJDK or Oracle) to compile CheckLT. 
+
+
+* Setting Up for Development
+
+CheckLT is currently primarily developed on Emacs using eclim. If you wish to use Eclipse (or eclim) for hacking on CheckLT, there is a special Gradle target for generating a Eclipse workspace for the CheckLT plugin. 
+
+To do this, execute the following commands from the base of the source distribution:
+
+#+BEGIN_SRC sh
+
+# cd checker-lattice-tainting-plugin
+# gradle -q eclipse
+
+#+END_SRC
+
+The directory =checker-lattice=tainting-plugin= will now be an Eclipse project directory which may be imported. 
+
+Note that you must make a minor modification to the generated .classpath file.
+
+In your .classpath file, make sure the following line is LAST.
+
+
+#+BEGIN_SRC xml
+
+ <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+
+#+END_SRC
 
 * Poor Man's Information Flow in Two Steps
 
