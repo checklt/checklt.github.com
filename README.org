@@ -1,10 +1,13 @@
 #+TITLE: CheckLT: Taint Checking for Mere Mortals
 #+AUTHOR: John L. Singleton
 #+OPTIONS: toc:nil
+#+OPTIONS: num:nil
 
 #+BEGIN_HTML
 ---
 layout: default
+permalink: index.html
+release: 06042013
 ---
 #+END_HTML
 
@@ -22,6 +25,12 @@ Though CheckLT relies on Checker Framework for its base functionality (in fact, 
 
 * Install
 Before you install CheckLT, make sure you have a recent Java 7 (1.7) installed. You can use either the Oracle JDK or OpenJDK.
+
+#+BEGIN_HTML
+<div align="center">
+<button type="button" href="#" class="btn btn-success btn-large" onclick="location.href='/releases/checklt-{{page.release}}.zip';"><i class="icon-white icon-arrow-down"></i> Download CheckLT</button>
+</div>
+#+END_HTML
 
 To install, download the archive, and run the included jar file by double clicking on it. If for some reason your system does not suport running executable jar files by double clicking, you can install it from a command prompt by running:
 

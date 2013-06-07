@@ -1,1 +1,5 @@
-console.log('This would be the main JS file.');
+function download(){
+    location.href='/releases/checklt-06042013.zip';
+}
+
+
