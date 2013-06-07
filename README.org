@@ -1,6 +1,15 @@
 #+TITLE: CheckLT: Taint Checking for Mere Mortals
 #+AUTHOR: John L. Singleton
+#+OPTIONS: toc:nil
 
+#+BEGIN_HTML
+---
+layout: default
+---
+#+END_HTML
+
+
+#+TOC: headlines 2
 
 
 * What is CheckLT?
@@ -208,6 +217,12 @@ CheckLT is a plugin for the Checker Framework that checks for taint using a latt
 * Acknowledgements and Thanks
 
 CheckLT is a direct byproduct of my work with Gary Leavens at the University of Central Florida and David Naumann the Stevens Insitute of Technology, to whom I am deeply grateful. Without their constant guidance (and correction!) and encouragement CheckLT wouldn't have been possible!
+
+
+| test | test | test | test | test |
+|------+------+------+------+------|
+| 1    | 2    | 3    | 4    | 5    |
+|      |      |      |      |      |
 
 
 * Related Works, People, Papers, Etc

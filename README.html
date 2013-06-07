@@ -1,0 +1,380 @@
+---
+layout: default
+---
+
+
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#sec-1">1. What is CheckLT?</a></li>
+<li><a href="#sec-2">2. Install</a></li>
+<li><a href="#sec-3">3. Building CheckLT</a></li>
+<li><a href="#sec-4">4. Setting Up for Development</a></li>
+<li><a href="#sec-5">5. Poor Man's Information Flow in Two Steps</a>
+<ul>
+<li><a href="#sec-5-1">5.1. Configuring The Lattice</a></li>
+<li><a href="#sec-5-2">5.2. Label Syntax</a></li>
+<li><a href="#sec-5-3">5.3. Declassification</a></li>
+</ul>
+</li>
+<li><a href="#sec-6">6. Example: Keeping SQL Queries Clean</a></li>
+<li><a href="#sec-7">7. What's With the Name?</a></li>
+<li><a href="#sec-8">8. Acknowledgements and Thanks</a></li>
+<li><a href="#sec-9">9. Related Works, People, Papers, Etc</a></li>
+</ul>
+</div>
+</div>
+
+
+<p>
+this is a test
+</p>
+
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1"><span class="section-number-2">1</span> What is CheckLT?</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+CheckLT is a program verification tool for Java which can help you use taint tracking to find defects in your software. CheckLT provides an easy to install verification toolset, a simple, non-invasive syntax for annotating programs, and a dynamically configurable security lattice. 
+</p>
+
+<p>
+CheckLT was born out of a research project at the University of Central Florida where we are researching creating tools for secure information flow analysis for Android applications. CheckLT does not implement full information flow security, but instead aims at being a lightweight security analysis toolkit for Java. 
+</p>
+
+<p>
+Though CheckLT relies on Checker Framework for its base functionality (in fact, it is a plugin for the checker framework) CheckLT is being distributed independently of Checker Framework as a part of an experiment by this author to make formal verification tools more easily accessible outside of the research community. You can think of it as a "Click, Run, Verify!" approach to formal methods software!
+</p>
+</div>
+</div>
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2"><span class="section-number-2">2</span> Install</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+Before you install CheckLT, make sure you have a recent Java 7 (1.7) installed. You can use either the Oracle JDK or OpenJDK.
+</p>
+
+<p>
+To install, download the archive, and run the included jar file by double clicking on it. If for some reason your system does not suport running executable jar files by double clicking, you can install it from a command prompt by running:
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-sh"># java -jar checklt-installer.jar
+</pre>
+</div>
+
+<p>
+Windows Users: To use CheckLT from the command line, please add the path you installed CheckLT in to your <code>PATH</code>. 
+</p>
+
+<p>
+After you install CheckLT you can run it from the command prompt by running:
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-sh"># checklt MyProgram.java
+</pre>
+</div>
+
+<p>
+Note that checklt supports all the commands available to a traditional Java compiler. To get a complete list of options, you can run the following command:
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-sh"># checklt -help
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-3" class="outline-2">
+<h2 id="sec-3"><span class="section-number-2">3</span> Building CheckLT</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+To build CheckLT, you will need to have the build tool Gradle (version 1.4 or higher) and <a href="http://izpack.org/">IzPack</a> installed (version 4 or higher). CheckLT's build scripts assume that the IzPack install directory is on your path. To build, simply use one of the gradle targets or simply:
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-sh"># gradle
+</pre>
+</div>
+
+<p>
+To build the entire distribution. All required dependencies will be fetched at build time. Note that you will need some recent Java 7 compiler (OpenJDK or Oracle) to compile CheckLT. 
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-4" class="outline-2">
+<h2 id="sec-4"><span class="section-number-2">4</span> Setting Up for Development</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+CheckLT is currently primarily developed on Emacs using eclim. If you wish to use Eclipse (or eclim) for hacking on CheckLT, there is a special Gradle target for generating a Eclipse workspace for the CheckLT plugin. 
+</p>
+
+<p>
+To do this, execute the following commands from the base of the source distribution:
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-sh"># cd checker-lattice-tainting-plugin
+# gradle -q eclipse
+</pre>
+</div>
+
+<p>
+The directory <code>checker-lattice-tainting-plugin</code> will now be an Eclipse project directory which may be imported. 
+</p>
+
+<p>
+Note that you must make a minor modification to the generated .classpath file.
+</p>
+
+<p>
+In your .classpath file, make sure the following line is LAST.
+</p>
+
+
+<div class="org-src-container">
+
+<pre class="src src-xml">&lt;classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/&gt;
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-sec-5" class="outline-2">
+<h2 id="sec-5"><span class="section-number-2">5</span> Poor Man's Information Flow in Two Steps</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+To configure CheckLT for your application you must do two things. First, you must configure security rules for your particular application. In this process you will configure a <i>security lattice</i>, as we shall see in the next section. Once your security lattice is set up you can then annotate your program to reflect your concerns. The next two sections cover this process in detail.
+</p>
+</div>
+
+<div id="outline-container-sec-5-1" class="outline-3">
+<h3 id="sec-5-1"><span class="section-number-3">5.1</span> Configuring The Lattice</h3>
+<div class="outline-text-3" id="text-5-1">
+<p>
+The first thing you must do is configure a security lattice for use with CheckLT. This file should be called <code>security.xml</code>, and it should be in the root directory from which you execute CheckLT. Note that CheckLT can (and will) check your proposed lattice for soundness before executing. As of the current version, CheckLT checks to make sure that no insecure flows are specified (via graph cycle checking) and that all specified trusts are reachable and properly declared. 
+</p>
+
+<p>
+The following example represents a slightly more complicated lattice than you will need for most projects. It is presented simply to showcase some of the flexibility of CheckLT.
+</p>
+
+
+<div class="org-src-container">
+
+<pre class="src src-xml">&lt;linear-lattice&gt;
+
+    &lt;!-- all levels must first be declared --&gt;
+    &lt;levels&gt;
+        &lt;level&gt;Private&lt;/level&gt;
+        &lt;level&gt;UserTrusts&lt;/level&gt;
+        &lt;level&gt;User&lt;/level&gt;
+        &lt;level&gt;Public&lt;/level&gt;
+    &lt;/levels&gt;
+
+
+    &lt;level-specs&gt;
+
+        &lt;!-- level spec for Public --&gt;
+        &lt;level-spec&gt;
+            &lt;name&gt;Public&lt;/name&gt;
+
+            &lt;trusts&gt;
+                &lt;level&gt;Private&lt;/level&gt;
+                &lt;level&gt;UserTrusts&lt;/level&gt;
+                &lt;level&gt;User&lt;/level&gt;
+            &lt;/trusts&gt;
+        &lt;/level-spec&gt;
+
+        &lt;!-- level spec for User --&gt;
+        &lt;level-spec&gt;
+            &lt;name&gt;User&lt;/name&gt;
+
+            &lt;trusts&gt;
+                &lt;level&gt;UserTrusts&lt;/level&gt;
+
+            &lt;/trusts&gt;
+        &lt;/level-spec&gt;
+
+
+        &lt;!-- level spec for UserTrusts --&gt;
+        &lt;level-spec&gt;
+            &lt;name&gt;UserTrusts&lt;/name&gt;
+
+            &lt;trusts&gt;
+                &lt;level&gt;Private&lt;/level&gt;
+
+            &lt;/trusts&gt;
+        &lt;/level-spec&gt;
+
+
+        &lt;!-- level spec for UserTrusts --&gt;
+        &lt;level-spec&gt;
+            &lt;name&gt;Private&lt;/name&gt;
+
+            &lt;trusts&gt;
+                &lt;!-- trusts no one (other than self) --&gt;
+            &lt;/trusts&gt;
+        &lt;/level-spec&gt;
+
+    &lt;/level-specs&gt;
+
+&lt;/linear-lattice&gt;
+</pre>
+</div>
+
+<p>
+The labels in Listing X.X are explained as follows:
+</p>
+
+<ol class="org-ol">
+<li>Public (⊥): Any information that may freely move through the application and conversely, the least trusted information level.
+</li>
+<li>User: Information that is private and should only be known to the user.
+</li>
+<li>UserTrusts: Information that is private, but may be shared with special endpoints that the user highly trusts. Endpoints may be specific instance variables, methods, or entire classes.
+</li>
+<li>Private (⊤): The highest level of privacy. Information may not even be known to the user. An example of such a piece of information could be an internal result used for the verification of a serial number.
+</li>
+</ol>
+
+<p>
+While more complex lattice structures are possible to represent in CheckLT, as of the current release, CheckLT recognizes a linear lattice at the moment. 
+</p>
+
+<p>
+Graphically represented, the lattice described above looks like Figure X.X. As you can see, the reason we call this a linear lattice is that the structure is strongly linear; that is, information may travel upwards in the lattice, but not back down (without declassification).
+</p>
+</div>
+</div>
+<div id="outline-container-sec-5-2" class="outline-3">
+<h3 id="sec-5-2"><span class="section-number-3">5.2</span> Label Syntax</h3>
+<div class="outline-text-3" id="text-5-2">
+<p>
+Labels in CheckLT are specified using Java Annotations. The BNF syntax is given in Listing X.X.
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-html">&lt;level&gt; ::= ‘"’ &lt;string&gt; ‘"’
+
+&lt;level-spec&gt; ::= &lt;level&gt;
+
+&lt;security-annotation&gt; ::= ‘@Level(’ &lt;level-spec&gt; ‘)’
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-sec-5-3" class="outline-3">
+<h3 id="sec-5-3"><span class="section-number-3">5.3</span> Declassification</h3>
+<div class="outline-text-3" id="text-5-3">
+<p>
+Declassification is essentially a controlled release of information. Depending on your application of CheckLT, you may or may not want explicit declassification. For example, if you are using CheckLT to do taint tracking against within SQL queries, you might want to specify that <i>no</i> declassification may be performed. However, in the same scenario you might have some routine that "untaints" a tainted query. In such a case you will need declassification. 
+</p>
+
+<p>
+Below is an example of explicit declassification. 
+</p>
+
+
+<div class="org-src-container">
+
+<pre class="src src-java">TODO
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-6" class="outline-2">
+<h2 id="sec-6"><span class="section-number-2">6</span> Example: Keeping SQL Queries Clean</h2>
+<div class="outline-text-2" id="text-6">
+<p>
+TODO
+</p>
+</div>
+</div>
+<div id="outline-container-sec-7" class="outline-2">
+<h2 id="sec-7"><span class="section-number-2">7</span> What's With the Name?</h2>
+<div class="outline-text-2" id="text-7">
+<p>
+CheckLT is a plugin for the Checker Framework that checks for taint using a lattice. The "LT" in  CheckLT is for "Lattice Tainting." It is pronounced to rhyme with "Chicklet."
+</p>
+</div>
+</div>
+<div id="outline-container-sec-8" class="outline-2">
+<h2 id="sec-8"><span class="section-number-2">8</span> Acknowledgements and Thanks</h2>
+<div class="outline-text-2" id="text-8">
+<p>
+CheckLT is a direct byproduct of my work with Gary Leavens at the University of Central Florida and David Naumann the Stevens Insitute of Technology, to whom I am deeply grateful. Without their constant guidance (and correction!) and encouragement CheckLT wouldn't have been possible!
+</p>
+
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col class="right"/>
+
+<col class="right"/>
+
+<col class="right"/>
+
+<col class="right"/>
+
+<col class="right"/>
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="right">test</th>
+<th scope="col" class="right">test</th>
+<th scope="col" class="right">test</th>
+<th scope="col" class="right">test</th>
+<th scope="col" class="right">test</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="right">1</td>
+<td class="right">2</td>
+<td class="right">3</td>
+<td class="right">4</td>
+<td class="right">5</td>
+</tr>
+
+<tr>
+<td class="right">&#xa0;</td>
+<td class="right">&#xa0;</td>
+<td class="right">&#xa0;</td>
+<td class="right">&#xa0;</td>
+<td class="right">&#xa0;</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div id="outline-container-sec-9" class="outline-2">
+<h2 id="sec-9"><span class="section-number-2">9</span> Related Works, People, Papers, Etc</h2>
+<div class="outline-text-2" id="text-9">
+<ul class="org-ul">
+<li><a href="http://www.the-singleton.com">My Blog @ The-Singleton</a>
+</li>
+<li><a href="http://www.eecs.ucf.edu/~leavens/">Gary Leaven's Research Page @ UCF</a>
+</li>
+<li><a href="http://www.cs.stevens.edu/~naumann/">David Naumann's Page</a> 
+</li>
+<li><a href="http://types.cs.washington.edu/checker-framework/">The Checker Framework</a>
+</li>
+<li><a href="http://docs.lib.purdue.edu/cgi/viewcontent.cgi?article=1123&context=cstech">Paper on the Lattice Model of Information Flow</a>
+</li>
+</ul>
+</div>
+</div>
