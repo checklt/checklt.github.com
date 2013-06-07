@@ -1,7 +1,7 @@
 ---
 layout: default
 permalink: index.html
-release: 06042013
+release: 'JUN042013'
 ---
 
 
@@ -11,19 +11,21 @@ release: 06042013
 <ul>
 <li><a href="#sec-1">What is CheckLT?</a></li>
 <li><a href="#sec-2">Install</a></li>
-<li><a href="#sec-3">Building CheckLT</a></li>
-<li><a href="#sec-4">Setting Up for Development</a></li>
-<li><a href="#sec-5">Poor Man's Information Flow in Two Steps</a>
+<li><a href="#sec-3">Platform Support</a></li>
+<li><a href="#sec-4">Building CheckLT</a></li>
+<li><a href="#sec-5">Setting Up for Development</a></li>
+<li><a href="#sec-6">Poor Man's Information Flow in Two Steps</a>
 <ul>
-<li><a href="#sec-5-1">Configuring The Lattice</a></li>
-<li><a href="#sec-5-2">Label Syntax</a></li>
-<li><a href="#sec-5-3">Declassification</a></li>
+<li><a href="#sec-6-1">Configuring The Lattice</a></li>
+<li><a href="#sec-6-2">Label Syntax</a></li>
+<li><a href="#sec-6-3">Declassification</a></li>
 </ul>
 </li>
-<li><a href="#sec-6">Example: Keeping SQL Queries Clean</a></li>
-<li><a href="#sec-7">What's With the Name?</a></li>
-<li><a href="#sec-8">Acknowledgements and Thanks</a></li>
-<li><a href="#sec-9">Related Works, People, Papers, Etc</a></li>
+<li><a href="#sec-7">Example: Keeping SQL Queries Clean</a></li>
+<li><a href="#sec-8">What's With the Name?</a></li>
+<li><a href="#sec-9">Acknowledgements and Thanks</a></li>
+<li><a href="#sec-10">Contact</a></li>
+<li><a href="#sec-11">Related Works, People, Papers, Etc</a></li>
 </ul>
 </div>
 </div>
@@ -92,11 +94,58 @@ Note that checklt supports all the commands available to a traditional Java comp
 </div>
 </div>
 
+
 <div id="outline-container-sec-3" class="outline-2">
-<h2 id="sec-3">Building CheckLT</h2>
+<h2 id="sec-3">Platform Support</h2>
 <div class="outline-text-2" id="text-3">
 <p>
-To build CheckLT, you will need to have the build tool Gradle (version 1.4 or higher) and <a href="http://izpack.org/">IzPack</a> installed (version 4 or higher). CheckLT's build scripts assume that the IzPack install directory is on your path. To build, simply use one of the gradle targets or simply:
+CheckLT is regularly tested against OSX and Linux; lesser so for Windows-based platforms. Any help getting testing on more platforms is greatly needed!
+</p>
+
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col class="left"/>
+
+<col class="left"/>
+
+<col class="left"/>
+
+<col class="left"/>
+
+<col class="left"/>
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="left">Date Tested/Updated</th>
+<th scope="col" class="left">OSX 10.8.3</th>
+<th scope="col" class="left">Ubuntu Linux 13.04</th>
+<th scope="col" class="left">Windows 7</th>
+<th scope="col" class="left">Windows 8</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="left">06/06/2013</td>
+<td class="left">OK</td>
+<td class="left">OK</td>
+<td class="left">N/A</td>
+<td class="left">N/A</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+
+<div id="outline-container-sec-4" class="outline-2">
+<h2 id="sec-4">Building CheckLT</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+To build CheckLT, you will need to have the build tool <a href="http://www.gradle.org/">Gradle</a> (version 1.4 or higher) and <a href="http://izpack.org/">IzPack</a> installed (version 4 or higher). CheckLT's build scripts assume that the IzPack install directory is on your path. To build, simply use one of the gradle targets or simply:
 </p>
 
 <div class="org-src-container">
@@ -111,9 +160,9 @@ To build the entire distribution. All required dependencies will be fetched at b
 </div>
 </div>
 
-<div id="outline-container-sec-4" class="outline-2">
-<h2 id="sec-4">Setting Up for Development</h2>
-<div class="outline-text-2" id="text-4">
+<div id="outline-container-sec-5" class="outline-2">
+<h2 id="sec-5">Setting Up for Development</h2>
+<div class="outline-text-2" id="text-5">
 <p>
 CheckLT is currently primarily developed on Emacs using eclim. If you wish to use Eclipse (or eclim) for hacking on CheckLT, there is a special Gradle target for generating a Eclipse workspace for the CheckLT plugin. 
 </p>
@@ -149,17 +198,17 @@ In your .classpath file, make sure the following line is LAST.
 </div>
 </div>
 </div>
-<div id="outline-container-sec-5" class="outline-2">
-<h2 id="sec-5">Poor Man's Information Flow in Two Steps</h2>
-<div class="outline-text-2" id="text-5">
+<div id="outline-container-sec-6" class="outline-2">
+<h2 id="sec-6">Poor Man's Information Flow in Two Steps</h2>
+<div class="outline-text-2" id="text-6">
 <p>
 To configure CheckLT for your application you must do two things. First, you must configure security rules for your particular application. In this process you will configure a <i>security lattice</i>, as we shall see in the next section. Once your security lattice is set up you can then annotate your program to reflect your concerns. The next two sections cover this process in detail.
 </p>
 </div>
 
-<div id="outline-container-sec-5-1" class="outline-3">
-<h3 id="sec-5-1">Configuring The Lattice</h3>
-<div class="outline-text-3" id="text-5-1">
+<div id="outline-container-sec-6-1" class="outline-3">
+<h3 id="sec-6-1">Configuring The Lattice</h3>
+<div class="outline-text-3" id="text-6-1">
 <p>
 The first thing you must do is configure a security lattice for use with CheckLT. This file should be called <code>security.xml</code>, and it should be in the root directory from which you execute CheckLT. Note that CheckLT can (and will) check your proposed lattice for soundness before executing. As of the current version, CheckLT checks to make sure that no insecure flows are specified (via graph cycle checking) and that all specified trusts are reachable and properly declared. 
 </p>
@@ -256,9 +305,9 @@ Graphically represented, the lattice described above looks like Figure X.X. As y
 </p>
 </div>
 </div>
-<div id="outline-container-sec-5-2" class="outline-3">
-<h3 id="sec-5-2">Label Syntax</h3>
-<div class="outline-text-3" id="text-5-2">
+<div id="outline-container-sec-6-2" class="outline-3">
+<h3 id="sec-6-2">Label Syntax</h3>
+<div class="outline-text-3" id="text-6-2">
 <p>
 Labels in CheckLT are specified using Java Annotations. The BNF syntax is given in Listing X.X.
 </p>
@@ -274,9 +323,9 @@ Labels in CheckLT are specified using Java Annotations. The BNF syntax is given 
 </div>
 </div>
 </div>
-<div id="outline-container-sec-5-3" class="outline-3">
-<h3 id="sec-5-3">Declassification</h3>
-<div class="outline-text-3" id="text-5-3">
+<div id="outline-container-sec-6-3" class="outline-3">
+<h3 id="sec-6-3">Declassification</h3>
+<div class="outline-text-3" id="text-6-3">
 <p>
 Declassification is essentially a controlled release of information. Depending on your application of CheckLT, you may or may not want explicit declassification. For example, if you are using CheckLT to do taint tracking against within SQL queries, you might want to specify that <i>no</i> declassification may be performed. However, in the same scenario you might have some routine that "untaints" a tainted query. In such a case you will need declassification. 
 </p>
@@ -295,80 +344,48 @@ Below is an example of explicit declassification.
 </div>
 </div>
 
-<div id="outline-container-sec-6" class="outline-2">
-<h2 id="sec-6">Example: Keeping SQL Queries Clean</h2>
-<div class="outline-text-2" id="text-6">
+<div id="outline-container-sec-7" class="outline-2">
+<h2 id="sec-7">Example: Keeping SQL Queries Clean</h2>
+<div class="outline-text-2" id="text-7">
 <p>
 TODO
 </p>
 </div>
 </div>
-<div id="outline-container-sec-7" class="outline-2">
-<h2 id="sec-7">What's With the Name?</h2>
-<div class="outline-text-2" id="text-7">
+
+
+<div id="outline-container-sec-8" class="outline-2">
+<h2 id="sec-8">What's With the Name?</h2>
+<div class="outline-text-2" id="text-8">
 <p>
 CheckLT is a plugin for the Checker Framework that checks for taint using a lattice. The "LT" in  CheckLT is for "Lattice Tainting." It is pronounced to rhyme with "Chicklet."
 </p>
 </div>
 </div>
-<div id="outline-container-sec-8" class="outline-2">
-<h2 id="sec-8">Acknowledgements and Thanks</h2>
-<div class="outline-text-2" id="text-8">
+<div id="outline-container-sec-9" class="outline-2">
+<h2 id="sec-9">Acknowledgements and Thanks</h2>
+<div class="outline-text-2" id="text-9">
 <p>
 CheckLT is a direct byproduct of my work with Gary Leavens at the University of Central Florida and David Naumann the Stevens Insitute of Technology, to whom I am deeply grateful. Without their constant guidance (and correction!) and encouragement CheckLT wouldn't have been possible!
 </p>
-
-
-<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
-
-
-<colgroup>
-<col class="right"/>
-
-<col class="right"/>
-
-<col class="right"/>
-
-<col class="right"/>
-
-<col class="right"/>
-</colgroup>
-<thead>
-<tr>
-<th scope="col" class="right">test</th>
-<th scope="col" class="right">test</th>
-<th scope="col" class="right">test</th>
-<th scope="col" class="right">test</th>
-<th scope="col" class="right">test</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="right">1</td>
-<td class="right">2</td>
-<td class="right">3</td>
-<td class="right">4</td>
-<td class="right">5</td>
-</tr>
-
-<tr>
-<td class="right">&#xa0;</td>
-<td class="right">&#xa0;</td>
-<td class="right">&#xa0;</td>
-<td class="right">&#xa0;</td>
-<td class="right">&#xa0;</td>
-</tr>
-</tbody>
-</table>
 </div>
 </div>
 
-<div id="outline-container-sec-9" class="outline-2">
-<h2 id="sec-9">Related Works, People, Papers, Etc</h2>
-<div class="outline-text-2" id="text-9">
+<div id="outline-container-sec-10" class="outline-2">
+<h2 id="sec-10">Contact</h2>
+<div class="outline-text-2" id="text-10">
 <ul class="org-ul">
+<li>John L. Singleton &lt;jsinglet@gmail.com&gt;
+</li>
 <li><a href="http://www.the-singleton.com">My Blog @ The-Singleton</a>
 </li>
+</ul>
+</div>
+</div>
+<div id="outline-container-sec-11" class="outline-2">
+<h2 id="sec-11">Related Works, People, Papers, Etc</h2>
+<div class="outline-text-2" id="text-11">
+<ul class="org-ul">
 <li><a href="http://www.eecs.ucf.edu/~leavens/">Gary Leaven's Research Page @ UCF</a>
 </li>
 <li><a href="http://www.cs.stevens.edu/~naumann/">David Naumann's Page</a> 

@@ -7,7 +7,7 @@
 ---
 layout: default
 permalink: index.html
-release: 06042013
+release: 'JUN042013'
 ---
 #+END_HTML
 
@@ -59,9 +59,22 @@ Note that checklt supports all the commands available to a traditional Java comp
 #+END_SRC 
 
 
+
+* Platform Support
+
+CheckLT is regularly tested against OSX and Linux; lesser so for Windows-based platforms. Any help getting testing on more platforms is greatly needed!
+
+
+| Date Tested/Updated | OSX 10.8.3 | Ubuntu Linux 13.04 | Windows 7 | Windows 8 |
+|---------------------+------------+--------------------+-----------+-----------|
+| 06/06/2013          | OK         | OK                 | N/A       | N/A       |
+
+
+
+
 * Building CheckLT
 
-To build CheckLT, you will need to have the build tool Gradle (version 1.4 or higher) and [[http://izpack.org/][IzPack]] installed (version 4 or higher). CheckLT's build scripts assume that the IzPack install directory is on your path. To build, simply use one of the gradle targets or simply:
+To build CheckLT, you will need to have the build tool [[http://www.gradle.org/][Gradle]] (version 1.4 or higher) and [[http://izpack.org/][IzPack]] installed (version 4 or higher). CheckLT's build scripts assume that the IzPack install directory is on your path. To build, simply use one of the gradle targets or simply:
 
 #+BEGIN_SRC sh
 
@@ -219,6 +232,8 @@ TODO
 
 TODO
 
+
+
 * What's With the Name?
 
 CheckLT is a plugin for the Checker Framework that checks for taint using a lattice. The "LT" in  CheckLT is for "Lattice Tainting." It is pronounced to rhyme with "Chicklet."
@@ -228,15 +243,13 @@ CheckLT is a plugin for the Checker Framework that checks for taint using a latt
 CheckLT is a direct byproduct of my work with Gary Leavens at the University of Central Florida and David Naumann the Stevens Insitute of Technology, to whom I am deeply grateful. Without their constant guidance (and correction!) and encouragement CheckLT wouldn't have been possible!
 
 
-| test | test | test | test | test |
-|------+------+------+------+------|
-| 1    | 2    | 3    | 4    | 5    |
-|      |      |      |      |      |
+* Contact
 
+- John L. Singleton <jsinglet@gmail.com>
+- [[http://www.the-singleton.com][My Blog @ The-Singleton]]
 
 * Related Works, People, Papers, Etc
 
-- [[http://www.the-singleton.com][My Blog @ The-Singleton]]
 - [[http://www.eecs.ucf.edu/~leavens/][Gary Leaven's Research Page @ UCF]]
 - [[http://www.cs.stevens.edu/~naumann/][David Naumann's Page]] 
 - [[http://types.cs.washington.edu/checker-framework/][The Checker Framework]]
