@@ -524,7 +524,7 @@ CheckLT is a direct byproduct of my work with Gary Leavens at the University of 
 
 * Related Works, People, Papers, Etc
 
-- [[http://www.eecs.ucf.edu/~leavens/][Gary Leaven's Research Page @ UCF]]
+- [[http://www.eecs.ucf.edu/~leavens/][Gary Leavens' Research Page @ UCF]]
 - [[http://www.cs.stevens.edu/~naumann/][David Naumann's Page]] 
 - [[http://types.cs.washington.edu/checker-framework/][The Checker Framework]]
 - [[http://docs.lib.purdue.edu/cgi/viewcontent.cgi?article=1123&context=cstech][Paper on the Lattice Model of Information Flow]]
