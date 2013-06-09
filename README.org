@@ -28,7 +28,7 @@ Before you install CheckLT, make sure you have a recent Java 7 (1.7) installed. 
 
 #+BEGIN_HTML
 <div align="center">
-<button type="button" href="#" class="btn btn-success btn-large" onclick="location.href='/releases/checklt-{{page.release}}.zip';"><i class="icon-white icon-arrow-down"></i> Download CheckLT</button>
+<button type="button" href="#" class="btn btn-success btn-large" onclick="location.href='releases/checklt-{{page.release}}.zip';"><i class="icon-white icon-arrow-down"></i> Download CheckLT</button>
 </div>
 #+END_HTML
 
