@@ -11,7 +11,7 @@ release: 'JUN082013'
 ---
 #+END_HTML
 
-
+ 
 #+TOC: headlines 2
 
 
@@ -312,7 +312,7 @@ Note in the above example the need to specify =@SuppressWarnings("safe")=. This 
 
 * Example: Keeping SQL Queries Clean
 
-One common application of Taint Tracking is to indicate which inputs are "Safe" and to indicate which inputs need to be sanitized before being used.
+One very common application of Taint Tracking is to indicate which inputs are "Safe" and to indicate which inputs need to be sanitized before being used.
 
 A common example of where this technique is useful is in the problem of accepting input from a user that forms SQL queries. In many applications this problem is mitigated by simply sanitizing all inputs (ie, PreparedStatements), but our example takes the approach of using raw queries and showing that it is indeed safe to do so with the proper constraints. 
 
