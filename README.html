@@ -1,7 +1,7 @@
 ---
 layout: default
 permalink: index.html
-release: 'JUN042013'
+release: 'JUN082013'
 ---
 
 
@@ -451,7 +451,15 @@ Note in the above example the need to specify <code>@SuppressWarnings("safe")</c
 <h2 id="sec-8">Example: Keeping SQL Queries Clean</h2>
 <div class="outline-text-2" id="text-8">
 <p>
-TODO
+One common application of Taint Tracking is to indicate which inputs are "Safe" and to indicate which inputs need to be sanitized before being used.
+</p>
+
+<p>
+A common example of where this technique is useful is in the problem of accepting input from a user that forms SQL queries. In many applications this problem is mitigated by simply sanitizing all inputs (ie, PreparedStatements), but our example takes the approach of using raw queries and showing that it is indeed safe to do so with the proper constraints. 
+</p>
+
+<p>
+In the application below, we break our queries up into two categories: <code>Internal</code> and <code>TouchedByUser</code>. Queries that are <code>Internal</code> are considered safe for execution. Queries that are <code>TouchedByUser</code> are inherently untrustworthy and need to be sanitized before use. 
 </p>
 </div>
 
@@ -459,6 +467,10 @@ TODO
 <div id="outline-container-sec-8-1" class="outline-3">
 <h3 id="sec-8-1">The Lattice</h3>
 <div class="outline-text-3" id="text-8-1">
+<p>
+In the listing below we give the structure of the lattice for this example. Note that we have two levels: <code>Internal</code> and <code>TouchedByUser</code>.
+</p>
+
 <div class="org-src-container">
 
 <pre class="src src-xml">&lt;linear-lattice&gt;
@@ -501,6 +513,10 @@ TODO
 <div id="outline-container-sec-8-2" class="outline-3">
 <h3 id="sec-8-2">The Annotated Program</h3>
 <div class="outline-text-3" id="text-8-2">
+<p>
+With the annotated lattice in hand we may now proceed to our example. In this example we execute two types of queries: internal, trusted queries, and queries that have been influenced by user input.
+</p>
+
 <div class="org-src-container">
 
 <pre class="src src-java">import java.sql.Connection;
@@ -620,6 +636,31 @@ public class SqlExample {
 }
 </pre>
 </div>
+
+<p>
+Perhaps the most interesting portion of the preceding listing is in the <code>getAndRunQueryFromUser()</code> function. In this function, we see how the value of <code>newQuery</code> is influenced by combining <code>baseQuery</code> and the value returned from <code>getQueryFromUser()</code>. All of this is possible because values that are <code>Internal</code> may lower their security level to <code>TouchedByUser</code>, but not the other way around. 
+</p>
+
+
+<div class="org-src-container">
+
+<pre class="src src-java">public void getAndRunQueryFromUser() throws Exception {
+
+    // baseQuery is implicitly @Level("Internal")
+        String baseQuery = getBaseQuery();
+
+        // newQuery is now @Level("TouchedByUser");
+        String newQuery = baseQuery + getQueryFromUser();
+
+
+        // This call will fail
+        //executeQuery(newQuery);
+
+        // It must be called like:
+        executeQuery(SqlExample.sanitizeUserInput(newQuery));
+}
+</pre>
+</div>
 </div>
 </div>
 </div>
@@ -628,7 +669,7 @@ public class SqlExample {
 <h2 id="sec-9">What's With the Name?</h2>
 <div class="outline-text-2" id="text-9">
 <p>
-CheckLT is a plugin for the Checker Framework that checks for taint using a lattice. The "LT" in  CheckLT is for "Lattice Tainting." It is pronounced to rhyme with "Chicklet."
+CheckLT is a plugin for the Checker Framework that checks for taint using a lattice. The "LT" in  CheckLT is for "Lattice Tainting." It is pronounced to rhyme with "Chicklet" (hence the graphic in the banner).
 </p>
 </div>
 </div>

@@ -7,7 +7,7 @@
 ---
 layout: default
 permalink: index.html
-release: 'JUN042013'
+release: 'JUN082013'
 ---
 #+END_HTML
 
@@ -312,10 +312,16 @@ Note in the above example the need to specify =@SuppressWarnings("safe")=. This 
 
 * Example: Keeping SQL Queries Clean
 
-TODO
+One common application of Taint Tracking is to indicate which inputs are "Safe" and to indicate which inputs need to be sanitized before being used.
+
+A common example of where this technique is useful is in the problem of accepting input from a user that forms SQL queries. In many applications this problem is mitigated by simply sanitizing all inputs (ie, PreparedStatements), but our example takes the approach of using raw queries and showing that it is indeed safe to do so with the proper constraints. 
+
+In the application below, we break our queries up into two categories: =Internal= and =TouchedByUser=. Queries that are =Internal= are considered safe for execution. Queries that are =TouchedByUser= are inherently untrustworthy and need to be sanitized before use. 
 
 
 ** The Lattice
+
+In the listing below we give the structure of the lattice for this example. Note that we have two levels: =Internal= and =TouchedByUser=.
 
 #+BEGIN_SRC xml
 
@@ -356,6 +362,8 @@ TODO
 #+END_SRC
 
 ** The Annotated Program
+
+With the annotated lattice in hand we may now proceed to our example. In this example we execute two types of queries: internal, trusted queries, and queries that have been influenced by user input.
 
 #+BEGIN_SRC java
 
@@ -478,10 +486,31 @@ public class SqlExample {
 
 #+END_SRC
 
+Perhaps the most interesting portion of the preceding listing is in the =getAndRunQueryFromUser()= function. In this function, we see how the value of =newQuery= is influenced by combining =baseQuery= and the value returned from =getQueryFromUser()=. All of this is possible because values that are =Internal= may lower their security level to =TouchedByUser=, but not the other way around. 
+
+
+#+BEGIN_SRC java
+public void getAndRunQueryFromUser() throws Exception {
+    
+    // baseQuery is implicitly @Level("Internal")
+	String baseQuery = getBaseQuery();
+	
+	// newQuery is now @Level("TouchedByUser");
+	String newQuery = baseQuery + getQueryFromUser();
+
+	
+	// This call will fail
+	//executeQuery(newQuery);
+	
+	// It must be called like:
+	executeQuery(SqlExample.sanitizeUserInput(newQuery));
+}
+#+END_SRC
+
 
 * What's With the Name?
 
-CheckLT is a plugin for the Checker Framework that checks for taint using a lattice. The "LT" in  CheckLT is for "Lattice Tainting." It is pronounced to rhyme with "Chicklet."
+CheckLT is a plugin for the Checker Framework that checks for taint using a lattice. The "LT" in  CheckLT is for "Lattice Tainting." It is pronounced to rhyme with "Chicklet" (hence the graphic in the banner).
 
 * Acknowledgements and Thanks
 
