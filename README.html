@@ -11,21 +11,27 @@ release: 'JUN042013'
 <ul>
 <li><a href="#sec-1">What is CheckLT?</a></li>
 <li><a href="#sec-2">Install</a></li>
-<li><a href="#sec-3">Platform Support</a></li>
-<li><a href="#sec-4">Building CheckLT</a></li>
-<li><a href="#sec-5">Setting Up for Development</a></li>
-<li><a href="#sec-6">Poor Man's Information Flow in Two Steps</a>
+<li><a href="#sec-3">Setting Up Classpaths in Your Environment</a></li>
+<li><a href="#sec-4">Platform Support</a></li>
+<li><a href="#sec-5">Building CheckLT</a></li>
+<li><a href="#sec-6">Setting Up for Development</a></li>
+<li><a href="#sec-7">Poor Man's Information Flow in Two Steps</a>
 <ul>
-<li><a href="#sec-6-1">Configuring The Lattice</a></li>
-<li><a href="#sec-6-2">Label Syntax</a></li>
-<li><a href="#sec-6-3">Declassification</a></li>
+<li><a href="#sec-7-1">Configuring The Lattice</a></li>
+<li><a href="#sec-7-2">Label Syntax</a></li>
+<li><a href="#sec-7-3">Declassification</a></li>
 </ul>
 </li>
-<li><a href="#sec-7">Example: Keeping SQL Queries Clean</a></li>
-<li><a href="#sec-8">What's With the Name?</a></li>
-<li><a href="#sec-9">Acknowledgements and Thanks</a></li>
-<li><a href="#sec-10">Contact</a></li>
-<li><a href="#sec-11">Related Works, People, Papers, Etc</a></li>
+<li><a href="#sec-8">Example: Keeping SQL Queries Clean</a>
+<ul>
+<li><a href="#sec-8-1">The Lattice</a></li>
+<li><a href="#sec-8-2">The Annotated Program</a></li>
+</ul>
+</li>
+<li><a href="#sec-9">What's With the Name?</a></li>
+<li><a href="#sec-10">Acknowledgements and Thanks</a></li>
+<li><a href="#sec-11">Contact</a></li>
+<li><a href="#sec-12">Related Works, People, Papers, Etc</a></li>
 </ul>
 </div>
 </div>
@@ -69,11 +75,7 @@ To install, download the archive, and run the included jar file by double clicki
 </div>
 
 <p>
-Windows Users: To use CheckLT from the command line, please add the path you installed CheckLT in to your <code>PATH</code>. 
-</p>
-
-<p>
-After you install CheckLT you can run it from the command prompt by running:
+The CheckLT installer automatically updates your path (OSX, Windows, and Linux) and after you install CheckLT you can run it from the command prompt by running:
 </p>
 
 <div class="org-src-container">
@@ -96,8 +98,28 @@ Note that checklt supports all the commands available to a traditional Java comp
 
 
 <div id="outline-container-sec-3" class="outline-2">
-<h2 id="sec-3">Platform Support</h2>
+<h2 id="sec-3">Setting Up Classpaths in Your Environment</h2>
 <div class="outline-text-2" id="text-3">
+<p>
+Use of the <code>@Level</code> annotations requires that you have the CheckLT jar in your classpath. The jar you need is called <code>checker-lattice-tainting-plugin.jar</code>, and it is located in the <code>lib</code> directory of your CheckLT installation.
+</p>
+
+<p>
+Once you have added this jar to your classpath, you can import the necessary classes by adding the following import statement to the header of files that utilize CheckLT.
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-java">import checkers.latticetainting.quals.*;
+</pre>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-sec-4" class="outline-2">
+<h2 id="sec-4">Platform Support</h2>
+<div class="outline-text-2" id="text-4">
 <p>
 CheckLT is regularly tested against OSX and Linux; lesser so for Windows-based platforms. Any help getting testing on more platforms is greatly needed!
 </p>
@@ -132,7 +154,7 @@ CheckLT is regularly tested against OSX and Linux; lesser so for Windows-based p
 <td class="left">OK</td>
 <td class="left">OK</td>
 <td class="left">N/A</td>
-<td class="left">N/A</td>
+<td class="left">OK</td>
 </tr>
 </tbody>
 </table>
@@ -141,9 +163,9 @@ CheckLT is regularly tested against OSX and Linux; lesser so for Windows-based p
 
 
 
-<div id="outline-container-sec-4" class="outline-2">
-<h2 id="sec-4">Building CheckLT</h2>
-<div class="outline-text-2" id="text-4">
+<div id="outline-container-sec-5" class="outline-2">
+<h2 id="sec-5">Building CheckLT</h2>
+<div class="outline-text-2" id="text-5">
 <p>
 To build CheckLT, you will need to have the build tool <a href="http://www.gradle.org/">Gradle</a> (version 1.4 or higher) and <a href="http://izpack.org/">IzPack</a> installed (version 4 or higher). CheckLT's build scripts assume that the IzPack install directory is on your path. To build, simply use one of the gradle targets or simply:
 </p>
@@ -160,9 +182,9 @@ To build the entire distribution. All required dependencies will be fetched at b
 </div>
 </div>
 
-<div id="outline-container-sec-5" class="outline-2">
-<h2 id="sec-5">Setting Up for Development</h2>
-<div class="outline-text-2" id="text-5">
+<div id="outline-container-sec-6" class="outline-2">
+<h2 id="sec-6">Setting Up for Development</h2>
+<div class="outline-text-2" id="text-6">
 <p>
 CheckLT is currently primarily developed on Emacs using eclim. If you wish to use Eclipse (or eclim) for hacking on CheckLT, there is a special Gradle target for generating a Eclipse workspace for the CheckLT plugin. 
 </p>
@@ -198,20 +220,30 @@ In your .classpath file, make sure the following line is LAST.
 </div>
 </div>
 </div>
-<div id="outline-container-sec-6" class="outline-2">
-<h2 id="sec-6">Poor Man's Information Flow in Two Steps</h2>
-<div class="outline-text-2" id="text-6">
+<div id="outline-container-sec-7" class="outline-2">
+<h2 id="sec-7">Poor Man's Information Flow in Two Steps</h2>
+<div class="outline-text-2" id="text-7">
 <p>
 To configure CheckLT for your application you must do two things. First, you must configure security rules for your particular application. In this process you will configure a <i>security lattice</i>, as we shall see in the next section. Once your security lattice is set up you can then annotate your program to reflect your concerns. The next two sections cover this process in detail.
 </p>
 </div>
 
-<div id="outline-container-sec-6-1" class="outline-3">
-<h3 id="sec-6-1">Configuring The Lattice</h3>
-<div class="outline-text-3" id="text-6-1">
+<div id="outline-container-sec-7-1" class="outline-3">
+<h3 id="sec-7-1">Configuring The Lattice</h3>
+<div class="outline-text-3" id="text-7-1">
 <p>
 The first thing you must do is configure a security lattice for use with CheckLT. This file should be called <code>security.xml</code>, and it should be in the root directory from which you execute CheckLT. Note that CheckLT can (and will) check your proposed lattice for soundness before executing. As of the current version, CheckLT checks to make sure that no insecure flows are specified (via graph cycle checking) and that all specified trusts are reachable and properly declared. 
 </p>
+
+<p>
+To override the location of the default <code>security.xml</code> file, run CheckLT like this:
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-sh"># checklt -Alattice=yourxmlfile.xml YourClass.java
+</pre>
+</div>
 
 <p>
 The following example represents a slightly more complicated lattice than you will need for most projects. It is presented simply to showcase some of the flexibility of CheckLT.
@@ -231,9 +263,14 @@ The following example represents a slightly more complicated lattice than you wi
     &lt;/levels&gt;
 
 
+    &lt;!-- 
+         'level-specs' is a collection defining the relations
+         of the various levels 
+    --&gt;
     &lt;level-specs&gt;
 
         &lt;!-- level spec for Public --&gt;
+        &lt;!-- (trusts everyone)     --&gt;
         &lt;level-spec&gt;
             &lt;name&gt;Public&lt;/name&gt;
 
@@ -250,7 +287,7 @@ The following example represents a slightly more complicated lattice than you wi
 
             &lt;trusts&gt;
                 &lt;level&gt;UserTrusts&lt;/level&gt;
-
+                &lt;level&gt;Private&lt;/level&gt;
             &lt;/trusts&gt;
         &lt;/level-spec&gt;
 
@@ -261,7 +298,6 @@ The following example represents a slightly more complicated lattice than you wi
 
             &lt;trusts&gt;
                 &lt;level&gt;Private&lt;/level&gt;
-
             &lt;/trusts&gt;
         &lt;/level-spec&gt;
 
@@ -282,34 +318,42 @@ The following example represents a slightly more complicated lattice than you wi
 </div>
 
 <p>
-The labels in Listing X.X are explained as follows:
+The labels in the preceding listing are explained as follows:
 </p>
 
 <ol class="org-ol">
-<li>Public (⊥): Any information that may freely move through the application and conversely, the least trusted information level.
+<li>Public (⊥): Any information that may freely move through the application and conversely, the least trusted information level. <i>To think about this in terms of types, you can think of it as all other types are a subtype of <code>Public</code>.</i>
 </li>
 <li>User: Information that is private and should only be known to the user.
 </li>
 <li>UserTrusts: Information that is private, but may be shared with special endpoints that the user highly trusts. Endpoints may be specific instance variables, methods, or entire classes.
 </li>
-<li>Private (⊤): The highest level of privacy. Information may not even be known to the user. An example of such a piece of information could be an internal result used for the verification of a serial number.
+<li>Private (⊤): The highest level of privacy. Information may not even be known to the user. An example of such a piece of information could be an internal result used for the verification of a serial number. <i>Nothing is a subtype of this type</i>.
 </li>
 </ol>
+
+<div class="org-src-container">
+
+<pre class="src src-sh">Note: The DEFAULT level will always be ⊤. 
+      It is determined by finding the element 
+      of the lattice with the LEAST outgoing edges.
+</pre>
+</div>
 
 <p>
 While more complex lattice structures are possible to represent in CheckLT, as of the current release, CheckLT recognizes a linear lattice at the moment. 
 </p>
 
 <p>
-Graphically represented, the lattice described above looks like Figure X.X. As you can see, the reason we call this a linear lattice is that the structure is strongly linear; that is, information may travel upwards in the lattice, but not back down (without declassification).
+Graphically represented, the lattice described above looks like a traditional role hierarchy. As you can see, the reason we call this a linear lattice is that the structure is strongly linear; that is, information may travel upwards in the lattice, but not back down (without declassification).
 </p>
 </div>
 </div>
-<div id="outline-container-sec-6-2" class="outline-3">
-<h3 id="sec-6-2">Label Syntax</h3>
-<div class="outline-text-3" id="text-6-2">
+<div id="outline-container-sec-7-2" class="outline-3">
+<h3 id="sec-7-2">Label Syntax</h3>
+<div class="outline-text-3" id="text-7-2">
 <p>
-Labels in CheckLT are specified using Java Annotations. The BNF syntax is given in Listing X.X.
+Labels in CheckLT are specified using Java Annotations. The BNF of the <code>@Level</code> annotation is given in the following listing.
 </p>
 
 <div class="org-src-container">
@@ -321,11 +365,25 @@ Labels in CheckLT are specified using Java Annotations. The BNF syntax is given 
 &lt;security-annotation&gt; ::= ‘@Level(’ &lt;level-spec&gt; ‘)’
 </pre>
 </div>
+
+<p>
+Program statements are annotated by specifying the <code>@Level</code> annotation on them. The argument to the annotation must be a level as defined in your <code>security.xml</code>. In the snippet, below, we define two annotated variables.
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-java">@Level("Public")
+int publicValue = 36;
+
+@Level("Private")
+int privateValue = 1337;
+</pre>
 </div>
 </div>
-<div id="outline-container-sec-6-3" class="outline-3">
-<h3 id="sec-6-3">Declassification</h3>
-<div class="outline-text-3" id="text-6-3">
+</div>
+<div id="outline-container-sec-7-3" class="outline-3">
+<h3 id="sec-7-3">Declassification</h3>
+<div class="outline-text-3" id="text-7-3">
 <p>
 Declassification is essentially a controlled release of information. Depending on your application of CheckLT, you may or may not want explicit declassification. For example, if you are using CheckLT to do taint tracking against within SQL queries, you might want to specify that <i>no</i> declassification may be performed. However, in the same scenario you might have some routine that "untaints" a tainted query. In such a case you will need declassification. 
 </p>
@@ -337,43 +395,255 @@ Below is an example of explicit declassification.
 
 <div class="org-src-container">
 
-<pre class="src src-java">TODO
+<pre class="src src-java">import checkers.latticetainting.quals.Level;
+
+
+public class Simple {
+
+    public static void main(String args[]) {
+
+        // This assiangment is from Private -&gt; Public
+        // which is not allowed in our lattice
+
+        //@Level("Public")
+        //int e = Simple.testVal();
+
+        // To allow such an assignment, we can "declassify" the value
+        // like so:
+
+        @Level("Private")
+        int secretValue = Simple.testVal();
+
+        @Level("Public")
+        int publicValue = declassify(secretValue);
+
+    }
+
+    public static int testVal() {
+        @Level("Private")
+        int notSecret = 1000;
+        return notSecret;
+    }
+
+    @Level("Public")
+    public static int declassify(@Level("Private") int privateVal){
+        // Specify "safe" here to override the lattice
+        @SuppressWarnings("safe")
+        @Level("Public")
+        int publicVal = privateVal;
+
+        return publicVal;
+    }  
+}
+</pre>
+</div>
+
+<p>
+Note in the above example the need to specify <code>@SuppressWarnings("safe")</code>. This is required so that the flow against the lattice will be allowed.
+</p>
+</div>
+</div>
+</div>
+
+
+
+<div id="outline-container-sec-8" class="outline-2">
+<h2 id="sec-8">Example: Keeping SQL Queries Clean</h2>
+<div class="outline-text-2" id="text-8">
+<p>
+TODO
+</p>
+</div>
+
+
+<div id="outline-container-sec-8-1" class="outline-3">
+<h3 id="sec-8-1">The Lattice</h3>
+<div class="outline-text-3" id="text-8-1">
+<div class="org-src-container">
+
+<pre class="src src-xml">&lt;linear-lattice&gt;
+
+
+    &lt;levels&gt;
+        &lt;level&gt;Internal&lt;/level&gt;
+        &lt;level&gt;TouchedByUser&lt;/level&gt;
+    &lt;/levels&gt;
+
+    &lt;level-specs&gt;
+
+        &lt;level-spec&gt;
+            &lt;name&gt;Internal&lt;/name&gt;
+
+            &lt;trusts&gt;
+                &lt;level&gt;TouchedByUser&lt;/level&gt;
+            &lt;/trusts&gt;
+        &lt;/level-spec&gt;
+
+        &lt;!-- level spec for User --&gt;
+        &lt;level-spec&gt;
+            &lt;name&gt;TouchedByUser&lt;/name&gt;
+
+            &lt;trusts&gt;
+              &lt;!-- 
+                   this sort of information is "quarantined" and my not 
+                   go anywhere
+              --&gt;
+            &lt;/trusts&gt;
+        &lt;/level-spec&gt;
+
+    &lt;/level-specs&gt;
+
+&lt;/linear-lattice&gt;
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-sec-8-2" class="outline-3">
+<h3 id="sec-8-2">The Annotated Program</h3>
+<div class="outline-text-3" id="text-8-2">
+<div class="org-src-container">
+
+<pre class="src src-java">import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.io.*;
+import checkers.latticetainting.quals.*;
+
+
+public class SqlExample {
+
+    public Connection getConnection() throws Exception {
+        Class.forName("com.mysql.jdbc.Driver");
+        return DriverManager.getConnection("jdbc:mysql://localhost/examp");
+    }
+
+    // require that all of the executed queries are "Safe"
+    private void executeQuery(@Level("Internal") String q) throws Exception {
+
+        Connection c = getConnection();
+
+        try {
+            Statement stmt = getConnection().createStatement();
+            ResultSet rs =   stmt.executeQuery(q);
+        }finally {
+            c.close();
+        }
+    }
+
+    // internal queries are "Safe" by definition
+    @Level("Internal")
+    public String getBaseQuery()
+    {
+        @Level("Internal")
+        String query = "SELECT * from test_table";
+
+        return query;
+    }
+
+    // running an internal query is no problem, since the types 
+    // @Level("Internal") will match throughout.
+    public void runInternalQuery() throws Exception {
+        executeQuery(getBaseQuery());
+    }
+
+    public void getAndRunQueryFromUser() throws Exception {
+
+        // baseQuery is implicitly @Level("Internal")
+        String baseQuery = getBaseQuery();
+
+        // newQuery is now @Level("TouchedByUser");
+        String newQuery = baseQuery + getQueryFromUser();
+
+
+        // This call will fail
+        //executeQuery(newQuery);
+
+        // It must be called like:
+        executeQuery(SqlExample.sanitizeUserInput(newQuery));
+    }
+
+
+
+    // Because this has not been explicitly marked with 
+    // @Level("Internal"), it is "TouchedByUser" by default
+    public String getQueryFromUser(){
+
+      System.out.print("Enter Query Filter [NONE]: ");
+
+      BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+      String query = null;
+
+      try {
+          query =  br.readLine();
+      } catch (IOException ioe) {
+          System.out.println("IO Error?");
+          System.exit(1);
+      }
+      return query;
+    }
+
+
+    @Level("Internal")
+    public static String sanitizeUserInput(
+         @Level("TouchedByUser") String dirty
+    ){
+
+        //
+        // do some cleanup, remove SQL injections, etc
+        //
+
+        // Mark this as "clean" input
+        @SuppressWarnings("safe")
+        @Level("Internal")
+        String clean = dirty;
+
+        return clean;
+    } 
+
+    public static void main(String args[]) throws Exception {
+
+        System.out.println("====Executing Database Test===");
+
+        SqlExample ex = new SqlExample();
+
+        // first, try to run an internal query.
+        ex.runInternalQuery();
+        // next, try to execute an internal query that has 
+        // been modified by the user
+        ex.getAndRunQueryFromUser();
+    }
+
+}
 </pre>
 </div>
 </div>
 </div>
 </div>
 
-<div id="outline-container-sec-7" class="outline-2">
-<h2 id="sec-7">Example: Keeping SQL Queries Clean</h2>
-<div class="outline-text-2" id="text-7">
-<p>
-TODO
-</p>
-</div>
-</div>
-
-
-<div id="outline-container-sec-8" class="outline-2">
-<h2 id="sec-8">What's With the Name?</h2>
-<div class="outline-text-2" id="text-8">
+<div id="outline-container-sec-9" class="outline-2">
+<h2 id="sec-9">What's With the Name?</h2>
+<div class="outline-text-2" id="text-9">
 <p>
 CheckLT is a plugin for the Checker Framework that checks for taint using a lattice. The "LT" in  CheckLT is for "Lattice Tainting." It is pronounced to rhyme with "Chicklet."
 </p>
 </div>
 </div>
-<div id="outline-container-sec-9" class="outline-2">
-<h2 id="sec-9">Acknowledgements and Thanks</h2>
-<div class="outline-text-2" id="text-9">
+<div id="outline-container-sec-10" class="outline-2">
+<h2 id="sec-10">Acknowledgements and Thanks</h2>
+<div class="outline-text-2" id="text-10">
 <p>
 CheckLT is a direct byproduct of my work with Gary Leavens at the University of Central Florida and David Naumann the Stevens Insitute of Technology, to whom I am deeply grateful. Without their constant guidance (and correction!) and encouragement CheckLT wouldn't have been possible!
 </p>
 </div>
 </div>
 
-<div id="outline-container-sec-10" class="outline-2">
-<h2 id="sec-10">Contact</h2>
-<div class="outline-text-2" id="text-10">
+<div id="outline-container-sec-11" class="outline-2">
+<h2 id="sec-11">Contact</h2>
+<div class="outline-text-2" id="text-11">
 <ul class="org-ul">
 <li>John L. Singleton &lt;jsinglet@gmail.com&gt;
 </li>
@@ -382,9 +652,9 @@ CheckLT is a direct byproduct of my work with Gary Leavens at the University of 
 </ul>
 </div>
 </div>
-<div id="outline-container-sec-11" class="outline-2">
-<h2 id="sec-11">Related Works, People, Papers, Etc</h2>
-<div class="outline-text-2" id="text-11">
+<div id="outline-container-sec-12" class="outline-2">
+<h2 id="sec-12">Related Works, People, Papers, Etc</h2>
+<div class="outline-text-2" id="text-12">
 <ul class="org-ul">
 <li><a href="http://www.eecs.ucf.edu/~leavens/">Gary Leaven's Research Page @ UCF</a>
 </li>

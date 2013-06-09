@@ -6,12 +6,21 @@
     <meta http-equiv="X-UA-Compatible" content="chrome=1" />
     <meta name="description" content="CheckLT : Taint Checking for Mere Mortals" />
 
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="http://yandex.st/highlightjs/7.3/styles/default.min.css">
+    <script src="http://yandex.st/highlightjs/7.3/highlight.min.js"></script>
 
     <script src="javascripts/main.js"></script>
 
    <link href="stylesheets/bootstrap.min.css" rel="stylesheet" media="screen">
    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
 
+   <!-- highlight java --> 
+   <script tyle="text/javascript">
+     $(document).ready(function() {
+          $('pre.src-java').each(function(i, e) {hljs.highlightBlock(e)});
+     });
+   </script>
 
     <title>CheckLT</title>
   </head>
@@ -51,7 +60,7 @@
     <div id="footer_wrap" class="outer">
       <footer class="inner">
         <p class="copyright">CheckLT maintained by <a href="https://github.com/jsinglet">jsinglet</a></p>
-        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+        <p>Made with <a href="http://www.gnu.org/software/emacs/">Emacs</a> + <a href="http://orgmode.org/">Org Mode</a> + <a href="http://jekyllrb.com/">Jekyll</a></p>
       </footer>
     </div>
 

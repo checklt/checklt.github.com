@@ -40,9 +40,7 @@ To install, download the archive, and run the included jar file by double clicki
 
 #+END_SRC 
 
-Windows Users: To use CheckLT from the command line, please add the path you installed CheckLT in to your =PATH=. 
-
-After you install CheckLT you can run it from the command prompt by running:
+The CheckLT installer automatically updates your path (OSX, Windows, and Linux) and after you install CheckLT you can run it from the command prompt by running:
 
 #+BEGIN_SRC sh
 
@@ -60,6 +58,20 @@ Note that checklt supports all the commands available to a traditional Java comp
 
 
 
+* Setting Up Classpaths in Your Environment 
+
+Use of the =@Level= annotations requires that you have the CheckLT jar in your classpath. The jar you need is called =checker-lattice-tainting-plugin.jar=, and it is located in the =lib= directory of your CheckLT installation.
+
+Once you have added this jar to your classpath, you can import the necessary classes by adding the following import statement to the header of files that utilize CheckLT.
+
+#+BEGIN_SRC java
+
+import checkers.latticetainting.quals.*;
+
+#+END_SRC
+
+
+
 * Platform Support
 
 CheckLT is regularly tested against OSX and Linux; lesser so for Windows-based platforms. Any help getting testing on more platforms is greatly needed!
@@ -67,7 +79,7 @@ CheckLT is regularly tested against OSX and Linux; lesser so for Windows-based p
 
 | Date Tested/Updated | OSX 10.8.3 | Ubuntu Linux 13.04 | Windows 7 | Windows 8 |
 |---------------------+------------+--------------------+-----------+-----------|
-| 06/06/2013          | OK         | OK                 | N/A       | N/A       |
+| 06/06/2013          | OK         | OK                 | N/A       | OK        |
 
 
 
@@ -119,6 +131,14 @@ To configure CheckLT for your application you must do two things. First, you mus
 
 The first thing you must do is configure a security lattice for use with CheckLT. This file should be called =security.xml=, and it should be in the root directory from which you execute CheckLT. Note that CheckLT can (and will) check your proposed lattice for soundness before executing. As of the current version, CheckLT checks to make sure that no insecure flows are specified (via graph cycle checking) and that all specified trusts are reachable and properly declared. 
 
+To override the location of the default =security.xml= file, run CheckLT like this:
+
+#+BEGIN_SRC sh
+
+# checklt -Alattice=yourxmlfile.xml YourClass.java
+
+#+END_SRC 
+
 The following example represents a slightly more complicated lattice than you will need for most projects. It is presented simply to showcase some of the flexibility of CheckLT.
 
 
@@ -135,9 +155,14 @@ The following example represents a slightly more complicated lattice than you wi
     </levels>
 
 
+    <!-- 
+	 'level-specs' is a collection defining the relations
+         of the various levels 
+    -->
     <level-specs>
 
         <!-- level spec for Public -->
+	<!-- (trusts everyone)     -->
         <level-spec>
             <name>Public</name>
 
@@ -154,7 +179,7 @@ The following example represents a slightly more complicated lattice than you wi
 
             <trusts>
                 <level>UserTrusts</level>
-
+                <level>Private</level>
             </trusts>
         </level-spec>
 
@@ -165,7 +190,6 @@ The following example represents a slightly more complicated lattice than you wi
 
             <trusts>
                 <level>Private</level>
-
             </trusts>
         </level-spec>
 
@@ -185,20 +209,28 @@ The following example represents a slightly more complicated lattice than you wi
 
 #+END_SRC
 
-The labels in Listing X.X are explained as follows:
+The labels in the preceding listing are explained as follows:
 
-1. Public (⊥): Any information that may freely move through the application and conversely, the least trusted information level.
-2. User: Information that is private and should only be known to the user.
-3. UserTrusts: Information that is private, but may be shared with special endpoints that the user highly trusts. Endpoints may be specific instance variables, methods, or entire classes.
-4. Private (⊤): The highest level of privacy. Information may not even be known to the user. An example of such a piece of information could be an internal result used for the verification of a serial number.
+1) Public (⊥): Any information that may freely move through the application and conversely, the least trusted information level. /To think about this in terms of types, you can think of it as all other types are a subtype of =Public=./
+2) User: Information that is private and should only be known to the user.
+3) UserTrusts: Information that is private, but may be shared with special endpoints that the user highly trusts. Endpoints may be specific instance variables, methods, or entire classes.
+4) Private (⊤): The highest level of privacy. Information may not even be known to the user. An example of such a piece of information could be an internal result used for the verification of a serial number. /Nothing is a subtype of this type/.
+
+#+BEGIN_SRC sh
+
+Note: The DEFAULT level will always be ⊤. 
+      It is determined by finding the element 
+      of the lattice with the LEAST outgoing edges.
+
+#+END_SRC
 
 While more complex lattice structures are possible to represent in CheckLT, as of the current release, CheckLT recognizes a linear lattice at the moment. 
 
-Graphically represented, the lattice described above looks like Figure X.X. As you can see, the reason we call this a linear lattice is that the structure is strongly linear; that is, information may travel upwards in the lattice, but not back down (without declassification).
+Graphically represented, the lattice described above looks like a traditional role hierarchy. As you can see, the reason we call this a linear lattice is that the structure is strongly linear; that is, information may travel upwards in the lattice, but not back down (without declassification).
 
 ** Label Syntax
 
-Labels in CheckLT are specified using Java Annotations. The BNF syntax is given in Listing X.X.
+Labels in CheckLT are specified using Java Annotations. The BNF of the =@Level= annotation is given in the following listing.
 
 #+BEGIN_SRC html
 
@@ -210,6 +242,18 @@ Labels in CheckLT are specified using Java Annotations. The BNF syntax is given 
 
 #+END_SRC
 
+Program statements are annotated by specifying the =@Level= annotation on them. The argument to the annotation must be a level as defined in your =security.xml=. In the snippet, below, we define two annotated variables.
+
+#+BEGIN_SRC java
+
+@Level("Public")
+int publicValue = 36;
+
+@Level("Private")
+int privateValue = 1337;
+
+#+END_SRC
+
 ** Declassification 
 
 Declassification is essentially a controlled release of information. Depending on your application of CheckLT, you may or may not want explicit declassification. For example, if you are using CheckLT to do taint tracking against within SQL queries, you might want to specify that /no/ declassification may be performed. However, in the same scenario you might have some routine that "untaints" a tainted query. In such a case you will need declassification. 
@@ -218,20 +262,221 @@ Below is an example of explicit declassification.
 
 
 #+BEGIN_SRC java
+import checkers.latticetainting.quals.Level;
 
 
-TODO
+public class Simple {
 
+    public static void main(String args[]) {
 
+	// This assiangment is from Private -> Public
+	// which is not allowed in our lattice
+        
+	//@Level("Public")
+        //int e = Simple.testVal();
 
+	// To allow such an assignment, we can "declassify" the value
+	// like so:
+
+	@Level("Private")
+	int secretValue = Simple.testVal();
+
+	@Level("Public")
+	int publicValue = declassify(secretValue);
+	
+    }
+
+    public static int testVal() {
+	@Level("Private")
+        int notSecret = 1000;
+        return notSecret;
+    }
+
+    @Level("Public")
+    public static int declassify(@Level("Private") int privateVal){
+        // Specify "safe" here to override the lattice
+        @SuppressWarnings("safe")
+        @Level("Public")
+        int publicVal = privateVal;
+        
+        return publicVal;
+    }  
+}
 
 #+END_SRC
+
+Note in the above example the need to specify =@SuppressWarnings("safe")=. This is required so that the flow against the lattice will be allowed.
+
+
 
 
 * Example: Keeping SQL Queries Clean
 
 TODO
 
+
+** The Lattice
+
+#+BEGIN_SRC xml
+
+<linear-lattice>
+
+
+    <levels>
+        <level>Internal</level>
+        <level>TouchedByUser</level>
+    </levels>
+
+    <level-specs>
+
+        <level-spec>
+            <name>Internal</name>
+
+            <trusts>
+                <level>TouchedByUser</level>
+            </trusts>
+        </level-spec>
+
+        <!-- level spec for User -->
+        <level-spec>
+            <name>TouchedByUser</name>
+
+            <trusts>
+	      <!-- 
+		   this sort of information is "quarantined" and my not 
+		   go anywhere
+	      -->
+            </trusts>
+        </level-spec>
+
+    </level-specs>
+
+</linear-lattice>
+
+#+END_SRC
+
+** The Annotated Program
+
+#+BEGIN_SRC java
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.io.*;
+import checkers.latticetainting.quals.*;
+
+
+public class SqlExample {
+
+    public Connection getConnection() throws Exception {
+	Class.forName("com.mysql.jdbc.Driver");
+	return DriverManager.getConnection("jdbc:mysql://localhost/examp");
+    }
+
+    // require that all of the executed queries are "Safe"
+    private void executeQuery(@Level("Internal") String q) throws Exception {
+
+	Connection c = getConnection();
+
+	try {
+	    Statement stmt = getConnection().createStatement();
+	    ResultSet rs =   stmt.executeQuery(q);
+	}finally {
+	    c.close();
+	}
+    }
+
+    // internal queries are "Safe" by definition
+    @Level("Internal")
+    public String getBaseQuery()
+    {
+	@Level("Internal")
+	String query = "SELECT * from test_table";
+
+	return query;
+    }
+
+    // running an internal query is no problem, since the types 
+    // @Level("Internal") will match throughout.
+    public void runInternalQuery() throws Exception {
+	executeQuery(getBaseQuery());
+    }
+
+    public void getAndRunQueryFromUser() throws Exception {
+
+	// baseQuery is implicitly @Level("Internal")
+	String baseQuery = getBaseQuery();
+	
+	// newQuery is now @Level("TouchedByUser");
+	String newQuery = baseQuery + getQueryFromUser();
+
+	
+	// This call will fail
+	//executeQuery(newQuery);
+	
+	// It must be called like:
+	executeQuery(SqlExample.sanitizeUserInput(newQuery));
+    }
+
+    
+
+    // Because this has not been explicitly marked with 
+    // @Level("Internal"), it is "TouchedByUser" by default
+    public String getQueryFromUser(){
+
+      System.out.print("Enter Query Filter [NONE]: ");
+
+      BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+      String query = null;
+
+      try {
+	  query =  br.readLine();
+      } catch (IOException ioe) {
+	  System.out.println("IO Error?");
+	  System.exit(1);
+      }
+      return query;
+    }
+
+
+    @Level("Internal")
+    public static String sanitizeUserInput(
+         @Level("TouchedByUser") String dirty
+    ){
+
+	//
+	// do some cleanup, remove SQL injections, etc
+	//
+	
+	// Mark this as "clean" input
+        @SuppressWarnings("safe")
+        @Level("Internal")
+        String clean = dirty;
+        
+        return clean;
+    } 
+
+    public static void main(String args[]) throws Exception {
+
+	System.out.println("====Executing Database Test===");
+
+	SqlExample ex = new SqlExample();
+
+	// first, try to run an internal query.
+	ex.runInternalQuery();
+	// next, try to execute an internal query that has 
+	// been modified by the user
+	ex.getAndRunQueryFromUser();
+    }
+    
+}
+
+
+#+END_SRC
 
 
 * What's With the Name?
