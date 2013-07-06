@@ -425,8 +425,7 @@ public class Simple {
         return notSecret;
     }
 
-    @Level("Public")
-    public static int declassify(@Level("Private") int privateVal){
+    public static @Level("Public") int declassify(@Level("Private") int privateVal){
         // Specify "safe" here to override the lattice
         @SuppressWarnings("safe")
         @Level("Public")
@@ -550,8 +549,8 @@ public class SqlExample {
     }
 
     // internal queries are "Safe" by definition
-    @Level("Internal")
-    public String getBaseQuery()
+
+    public @Level("Internal") String getBaseQuery()
     {
         @Level("Internal")
         String query = "SELECT * from test_table";
@@ -603,8 +602,8 @@ public class SqlExample {
     }
 
 
-    @Level("Internal")
-    public static String sanitizeUserInput(
+
+    public static @Level("Internal") String sanitizeUserInput(
          @Level("TouchedByUser") String dirty
     ){
 
